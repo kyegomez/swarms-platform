@@ -7,8 +7,8 @@ import {
   TabsList,
   TabsTrigger,
 } from '@/shared/components/ui/tabs';
-import TabsData from './data';
 import { useEffect, useState } from 'react';
+import TabsData from './data';
 
 interface IStepProps {
   title: string;
@@ -17,12 +17,12 @@ interface IStepProps {
 }
 const Step = ({ title, description, sourceCode }: IStepProps) => {
   return (
-    <div className="flex h-full max-sm:flex-col max-sm:gap-8">
-      <div className="flex w-[50%] flex-col sm:me-4 max-sm:w-[100%] gap-4">
+    <div className="flex h-full max-lg:flex-col max-sm:gap-8">
+      <div className="flex w-[50%] flex-col sm:me-4 max-lg:w-[100%] gap-4">
         <h4 className="text-4xl font-bold max-sm:text-center">{title}</h4>
         <p className="text-lg max-sm:text-center">{description}</p>
       </div>
-      <div className="min-w-[50%] max-w-[50%] max-sm:min-w-[100%] max-sm:max-w-[100%] sm:ms-4">
+      <div className="min-w-[50%] max-w-[50%] max-lg:min-w-[100%] max-sm:max-w-[100%] sm:ms-4">
         <CodeBox
           sampleCodes={sourceCode}
           classes={{
@@ -45,7 +45,7 @@ const CodeSampleSection = () => {
   }, []);
 
   return (
-    <div className="container p-10 bg-background">
+    <div className=" shadow-5xl container bg-background p-10 dark:bg-black rounded-md" id='get_started'>
       <h2 className="text-8xl max-sm:text-4xl font-bold text-center mb-12">
         Get Started
       </h2>
