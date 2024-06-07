@@ -25,6 +25,10 @@
     "format": "prettier --write ."
   },
   "dependencies": {
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
+    "@mui/icons-material": "^5.15.19",
+    "@mui/material": "^5.15.19",
     "@octokit/rest": "^20.1.0",
     "@radix-ui/react-collapsible": "^1.0.3",
     "@radix-ui/react-dialog": "^1.0.5",
@@ -72,7 +76,6 @@
     "rate-limiter-flexible": "^5.0.0",
     "react": "latest",
     "react-dom": "latest",
-    "react-markdown": "^9.0.1",
     "react-merge-refs": "^2.1.1",
     "react-syntax-highlighter": "^15.5.0",
     "recharts": "^2.12.3",

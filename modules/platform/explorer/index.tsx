@@ -70,7 +70,7 @@ const Explorer = () => {
           duration: 3000,
         });
       })
-      .finally(() => {});
+      .finally(() => { });
   };
   useEffect(() => {
     if (!pendingSwarms.isLoading && pendingSwarms.data) {

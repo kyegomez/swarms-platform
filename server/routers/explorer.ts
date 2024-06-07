@@ -138,7 +138,7 @@ const explorerRouter = router({
         .limit(1);
       if ((lastSubmites?.data ?? [])?.length > 0) {
         const lastSubmit = lastSubmites.data?.[0];
-        const lastSubmitTime = new Date(lastSubmit.created_at);
+        const lastSubmitTime = new Date(lastSubmit?.created_at);
         const currentTime = new Date();
         const diff = currentTime.getTime() - lastSubmitTime.getTime();
         const diffHours = diff / (1000 * 60 * 60); // 1h
