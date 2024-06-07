@@ -1,17 +1,19 @@
 'use client';
 
-import Link from 'next/link';
-import { SignOut } from '@/shared/utils/auth-helpers/server';
-import { handleRequest } from '@/shared/utils/auth-helpers/client';
 import Logo from '@/shared/components/icons/Logo';
-import { usePathname, useRouter } from 'next/navigation';
-import { getRedirectMethod } from '@/shared/utils/auth-helpers/settings';
-import s from './Navbar.module.css';
 import { DISCORD, PLATFORM, SWARMS_GITHUB } from '@/shared/constants/links';
+import { handleRequest } from '@/shared/utils/auth-helpers/client';
+import { SignOut } from '@/shared/utils/auth-helpers/server';
+import { getRedirectMethod } from '@/shared/utils/auth-helpers/settings';
 import { cn } from '@/shared/utils/cn';
-import { Drawer, DrawerContent, DrawerTrigger, DrawerClose } from '../drawer';
-import { Button } from '../Button';
 import { Menu, X } from 'lucide-react';
+import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
+import SmoothScrollLink from '../../smooth-scroll/SmoothScrollLink';
+import { Button } from '../Button';
+import { Drawer, DrawerClose, DrawerContent, DrawerTrigger } from '../drawer';
+import s from './Navbar.module.css';
+import ThemeToggler from './theme-toggler';
 
 interface NavlinksProps {
   user?: any;
@@ -28,20 +30,23 @@ export default function Navlinks({ user }: NavlinksProps) {
           <Logo />
         </div>
         <nav className="flex ml-2 md:ml-6 gap-3 max-md:hidden">
-          <Link href="/pricing" className={s.link}>
+          <SmoothScrollLink href="#get_started" className={s.link}>
+            Get Started
+          </SmoothScrollLink>
+          <SmoothScrollLink href="#pricing" className={s.link}>
             Pricing
-          </Link>
-          <Link href={SWARMS_GITHUB} className={cn(s.link, 'hidden md:inline')}>
+          </SmoothScrollLink>
+          <Link href={SWARMS_GITHUB} className={cn(s.link, 'hidden md:inline link link--metis')}>
             GitHub
           </Link>
-          <Link href={DISCORD} className={cn(s.link, 'hidden md:inline')}>
+          <Link href={DISCORD} className={cn(s.link, 'hidden md:inline link link--metis')}>
             Community
           </Link>
-          <Link href="https://swarms.apac.ai/en/latest/" className={s.link}>
+          <Link href="https://swarms.apac.ai/en/latest/" className={cn(s.link, 'link link--metis')}>
             Docs
           </Link>
           {user && (
-            <Link href={PLATFORM.DASHBOARD} className={s.link}>
+            <Link href={PLATFORM.DASHBOARD} className={cn(s.link, 'link link--metis')}>
               Dashboard
             </Link>
           )}
@@ -66,23 +71,23 @@ export default function Navlinks({ user }: NavlinksProps) {
                 <DrawerClose className="absolute top-4 right-4">
                   <X />
                 </DrawerClose>
-                <Link href="/pricing" className={s.link}>
+                <Link href="/pricing" className={cn(s.link, 'link link--metis')}>
                   Pricing
                 </Link>
-                <Link href={SWARMS_GITHUB} className={s.link}>
+                <Link href={SWARMS_GITHUB} className={cn(s.link, 'link link--metis')}>
                   GitHub
                 </Link>
-                <Link href={DISCORD} className={s.link}>
+                <Link href={DISCORD} className={cn(s.link, 'link link--metis')}>
                   Community
                 </Link>
                 <Link
                   href="https://swarms.apac.ai/en/latest/"
-                  className={s.link}
+                  className={cn(s.link, 'link link--metis')}
                 >
                   Docs
                 </Link>
                 {user && (
-                  <Link href={PLATFORM.DASHBOARD} className={s.link}>
+                  <Link href={PLATFORM.DASHBOARD} className={cn(s.link, 'link link--metis')}>
                     Dashboard
                   </Link>
                 )}
@@ -96,21 +101,22 @@ export default function Navlinks({ user }: NavlinksProps) {
         {user ? (
           <form onSubmit={(e) => handleRequest(e, SignOut, router)}>
             <input type="hidden" name="pathName" value={usePathname()?.toString()} />
-            <button type="submit" className={s.link}>
+            <button type="submit" className={cn(s.link, 'link link--metis')}>
               Sign out
             </button>
           </form>
         ) : (
-          <Link href="/signin" className={s.link}>
+          <Link href="/signin" className={cn(s.link, 'link link--metis')}>
             Sign In
           </Link>
         )}
-        <Link href="/signin/signup" className={s.link}>
+        <Link href="/signin/signup" className={cn(s.link, 'link link--metis')}>
           Sign Up
         </Link>
-        <Link href="https://calendly.com/swarm-corp/30min" className={s.link}>
+        <Link href="https://calendly.com/swarm-corp/30min" className={cn(s.link, 'link link--metis')}>
           Get Demo
         </Link>
+        <ThemeToggler />
       </div>
     </div>
   );
