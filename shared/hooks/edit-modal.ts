@@ -2,7 +2,7 @@ import { useToast } from '@/shared/components/ui/Toasts/use-toast';
 import { debounce } from '@/shared/utils/helpers';
 import { useEffect, useMemo, useState } from 'react';
 import { trpc } from '@/shared/utils/trpc/trpc';
-import language from 'react-syntax-highlighter/dist/esm/languages/hljs/1c';
+import { useUploadFileToStorage } from './upload-file';
 
 interface EditExplorerModalProps {
   onClose: () => void;
@@ -16,6 +16,7 @@ type EditModal = {
   name: string;
   description?: string;
   tags?: string;
+  image_url?: string;
   useCases: { title: string; description: string }[];
 };
 
@@ -36,9 +37,11 @@ interface InputState {
   useCases: { title: string; description: string }[];
   uniqueField: string;
   language?: string;
+  imageUrl?: string;
   requirements?: { package: string; installation: string }[];
 }
 
+export type SwitchImageProps = 'yes' | 'no';
 export default function useEditModal({
   entityType,
   entityId,
@@ -47,6 +50,7 @@ export default function useEditModal({
 }: EditExplorerModalProps) {
   const toast = useToast();
 
+  const [isSwitchImage, setIsSwitchImage] = useState<SwitchImageProps>('no');
   const [inputState, setInputState] = useState<InputState>({
     name: '',
     description: '',
@@ -54,8 +58,12 @@ export default function useEditModal({
     useCases: [{ title: '', description: '' }],
     uniqueField: '',
     language: 'python',
+    imageUrl: '',
     requirements: [{ package: '', installation: '' }],
   });
+
+  const { imageFile, isUploading, handleFileChange, setImageFile, uploadImage } =
+    useUploadFileToStorage({ isSwitchImage });
 
   const validateMutation =
     entityType === 'agent'
@@ -79,6 +87,7 @@ export default function useEditModal({
         name: entityData.name ?? '',
         description: entityData.description ?? '',
         tags: entityData.tags ?? '',
+        imageUrl: entityData.image_url ?? '',
         useCases: entityData.use_cases ?? [{ title: '', description: '' }],
         uniqueField:
           entityType === 'agent' ? entityData.agent : entityData.prompt,
@@ -135,7 +144,7 @@ export default function useEditModal({
     }
   };
 
-  const submit = () => {
+  const submit = async () => {
     // Common validation
     if (validateMutation.isPending) {
       toast.toast({
@@ -205,6 +214,9 @@ export default function useEditModal({
       }
     }
 
+    const imageLink = imageFile ? await uploadImage() : null;
+    const imageUrl = isSwitchImage === 'no' ? entityData.image_url : imageLink;
+
     // Prepare data based on entityType
     const data: AgentEditModal | PromptEditModal =
       entityType === 'agent'
@@ -216,6 +228,7 @@ export default function useEditModal({
             useCases: inputState.useCases,
             agent: inputState.uniqueField,
             language: inputState.language!,
+            image_url: imageUrl || "",
             requirements: inputState.requirements!,
           }
         : {
@@ -224,26 +237,34 @@ export default function useEditModal({
             description: inputState.description,
             tags: trimTags,
             useCases: inputState.useCases,
+            image_url: imageUrl || "",
             prompt: inputState.uniqueField,
           };
 
     // Edit entity
-    editMutation.mutateAsync(data).then(() => {
-      toast.toast({
-        title: `${entityType.charAt(0).toUpperCase() + entityType.slice(1)} edited successfully 🎉`,
-      });
-      onClose();
-      onEditSuccessfully();
-    });
+    editMutation
+      .mutateAsync(data)
+      .then(() => {
+        toast.toast({
+          title: `${entityType.charAt(0).toUpperCase() + entityType.slice(1)} edited successfully 🎉`,
+        });
+        setImageFile(null);
+        onClose();
+        onEditSuccessfully();
+      })
+      .catch((err) => console.error(err));
   };
 
   return {
     inputState,
     setInputState,
+    isSwitchImage,
+    setIsSwitchImage,
     submit,
     debouncedCheckUniqueField,
     validateMutation,
-    isPending: editMutation.isPending,
+    isPending: editMutation.isPending || isUploading,
+    handleFileChange,
     addUseCase,
     removeUseCase,
     addRequirement,
